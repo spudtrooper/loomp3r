@@ -7,7 +7,8 @@
   "license": "MIT",
   "homepage": "https://spudtrooper.github.io/loomp3r",
   "scripts": {
-    "build": "parcel build src/index.js --dist-dir dist --public-url ./",
+    "build": "parcel build --dist-dir dist src/index.js",
+    "clean": "rm -rf dist",
     "dev": "parcel serve src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1",
     "predeploy": "yarn build",
