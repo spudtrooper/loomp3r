@@ -159,7 +159,7 @@ const initWavesurferInternal = async (fileName, blob) => {
 
   };
 
-  wsRegions.on("region-update-end", (region) => {
+  wsRegions.on("region-updated", (region) => {
     region.loop = true;
     saveRegions();
     addContentToList(region, region.strContent, $(`#li-${region.id}`));
