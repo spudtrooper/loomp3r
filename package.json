@@ -6,11 +6,12 @@
   "license": "MIT",
   "homepage": "https://spudtrooper.github.io/loomp3r",
   "scripts": {
-    "build": "parcel build --dist-dir dist src/index.html",
+    "build": "parcel build --dist-dir dist --public-url . src/index.html",
+    "build:gh": "parcel build --dist-dir dist --public-url /loomp3r src/index.html",
     "clean": "rm -rf dist",
     "dev": "parcel serve src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "predeploy": "yarn build",
+    "predeploy": "yarn build:gh",
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
