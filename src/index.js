@@ -154,26 +154,29 @@ const initWavesurferInternal = async (fileName, blob) => {
 
   let regionNum = 1;
 
-  const addContent = (region, el) => {
-    $(el).html(`<b>${region.content}</b> - ${region.start.toFixed(2)}s to ${region.end.toFixed(2)}s`);
+  const addContentToList = (region, strContent, el) => {
+    $(el).html(`<b>${strContent}</b> - ${region.start.toFixed(2)}s to ${region.end.toFixed(2)}s`);
 
   };
 
   wsRegions.on("region-update-end", (region) => {
     region.loop = true;
     saveRegions();
-    addContent(region, $(`#li-${region.id}`));
+    addContentToList(region, region.strContent, $(`#li-${region.id}`));
   });
 
   wsRegions.on("region-created", (region) => {
-    region.content = String(regionNum++);
+    const strContent = String(regionNum++);
+    const content = $("<span>").text(strContent);
+    region.strContent = strContent;
+    // region.content = content;
     saveRegions();
     const el = $("<a>")
       .attr("href", "#")
       .addClass("list-group-item")
       .addClass("list-group-item-action")
       .attr("id", `li-${region.id}`);
-    addContent(region, el);
+    addContentToList(region, strContent, el);
     $("#regions-list").append(el);
     el.click((e) => {
       e.preventDefault();

@@ -6,14 +6,19 @@
   "license": "MIT",
   "homepage": "https://spudtrooper.github.io/loomp3r",
   "scripts": {
-    "build": "parcel build --dist-dir dist --public-url . src/index.html",
-    "build:gh": "parcel build --dist-dir dist-gh --public-url /loomp3r src/index.html",
-    "clean": "rm -rf dist",
+    "prebuild": "rm -rf node_modules && yarn install && yarn clean",
+    "prebuild:gh": "rm -rf node_modules && yarn install && yarn clean:gh",
+    "_build": "parcel build --dist-dir dist/web --public-url . src/index.html",
+    "_build:gh": "parcel build --dist-dir dist/gh --public-url '/loomp3r' src/index.html",
+    "build": "yarn _build",
+    "build:gh": "yarn _build:gh",
+    "clean": "rm -rf dist/web",
+    "clean:gh": "rm -rf dist/gh",
     "dev": "parcel serve src/index.html",
     "dev:open": "yarn parcel serve src/index.html --open",
     "test": "echo \"Error: no test specified\" && exit 1",
     "predeploy": "yarn build:gh",
-    "deploy": "gh-pages -d dist-gh"
+    "deploy": "gh-pages -d dist/gh"
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",
