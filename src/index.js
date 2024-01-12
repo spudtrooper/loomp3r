@@ -29,6 +29,9 @@ const initWavesurfer = async (fileName, blob) => {
 };
 
 const initWavesurferInternal = async (fileName, blob) => {
+
+  let activeRegion = null;
+
   const ws = WaveSurfer.create({
     container: "#waveform",
     loop: true,
@@ -38,6 +41,7 @@ const initWavesurferInternal = async (fileName, blob) => {
   await ws.load(blob);
 
   ws.on("interaction", (e) => {
+    activeRegion = null;
     console.log("interaction");
     paused = false;
     setDisableRegionOutTrue();
@@ -62,6 +66,12 @@ const initWavesurferInternal = async (fileName, blob) => {
     paused = false;
   });
 
+  wsRegions.on("region-in", async (region) => {
+    activeRegion = region;
+    $(".list-group-item").removeClass("active");
+    $(`#li-${region.id}`).addClass("active");
+  });
+
   wsRegions.on("region-out", async (region) => {
     if (disableRegionOut) {
       disableRegionOut = false;
@@ -72,6 +82,8 @@ const initWavesurferInternal = async (fileName, blob) => {
     paused = true;
 
     if (Math.abs(region.end - ws.getCurrentTime()) > 0.1) return;
+
+    $(`#li-${region.id}`).removeClass("active");
 
     const start = region.start / ws.getDuration();
     ws.pause();
@@ -122,7 +134,7 @@ const initWavesurferInternal = async (fileName, blob) => {
   const localStorageKey = `regions-${fileName}`;
 
   const saveRegions = () =>
-    localStorage.setItem(localStorageKey, Object.keys(localStorage).some((key) => key.endsWith("-regions")));
+    localStorage.setItem(localStorageKey, JSON.stringify(wsRegions.regions));
 
   const clearRegions = () => {
     localStorage.removeItem(localStorageKey);
@@ -140,9 +152,35 @@ const initWavesurferInternal = async (fileName, blob) => {
   const restoreRegions = () =>
     JSON.parse(localStorage.getItem(localStorageKey)).forEach((region) => wsRegions.addRegion(region));
 
+  let regionNum = 1;
+
+  const addContent = (region, el) => {
+    $(el).html(`<b>${region.content}</b> - ${region.start.toFixed(2)}s to ${region.end.toFixed(2)}s`);
+
+  };
+
   wsRegions.on("region-update-end", (region) => {
     region.loop = true;
     saveRegions();
+    addContent(region, $(`#li-${region.id}`));
+  });
+
+  wsRegions.on("region-created", (region) => {
+    region.content = String(regionNum++);
+    saveRegions();
+    const el = $("<a>")
+      .attr("href", "#")
+      .addClass("list-group-item")
+      .addClass("list-group-item-action")
+      .attr("id", `li-${region.id}`);
+    addContent(region, el);
+    $("#regions-list").append(el);
+    el.click((e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      region.play();
+      paused = false;
+    });
   });
 
   wsRegions.on("region-created", saveRegions);
