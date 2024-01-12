@@ -1,0 +1,23 @@
+{
+  "name": "loomp3r",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "repository": "https://github.com/spudtrooper/loomp3r.git",
+  "author": "Jeff Palm <jeff@jeffpalm.com>",
+  "license": "MIT",
+  "homepage": "https://spudtrooper.github.io/loomp3r",
+  "scripts": {
+    "build": "parcel build src/index.js --dist-dir dist --public-url ./",
+    "dev": "parcel serve src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1",
+    "parcel": "^2.11.0"
+  },
+  "dependencies": {
+    "wavesurfer.js": "^7.6.4"
+  }
+}
