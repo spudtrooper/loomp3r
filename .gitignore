@@ -52,3 +52,4 @@ Thumbs.db
 src/*.mp3
 .parcel-cache/
 dist/
+dist-gh/
